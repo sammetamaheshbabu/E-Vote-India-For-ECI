@@ -33,8 +33,7 @@
 9. [Final Outcome](#final-outcome)
 10. [Advantages](#advantages)
 11. [Conclusion](#conclusion)
-12. [Note](#note)
-13. [Contact](#contact)
+12. [Contact](#contact)
 
 ---
 
