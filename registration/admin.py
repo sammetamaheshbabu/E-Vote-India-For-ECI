@@ -1,0 +1,56 @@
+from django.contrib import admin
+from .models import NewVoteRegistrationData
+
+
+class NewVoteRegistrationDataAdmin(admin.ModelAdmin):
+    list_display = (
+        "state",
+        "district",
+        "assembly_constituency",
+        "first_name",
+        "middle_name",
+        "surname",
+        "photo",
+        "relative_type",
+        "relative_name",
+        "relative_surname",
+        "mobile_ownership",
+        "mobile_number",
+        "email_ownership",
+        "email_id",
+        "aadhaar_availability",
+        "aadhaar_number",
+        "gender",
+        "dob",
+        "proof_of_age",
+        "dob_document_type",
+        "dob_document",
+        "house_no",
+        "street",
+        "village_town",
+        "post_office",
+        "pin_code",
+        "mandal",
+        "district_address",
+        "state_address",
+        "proof_type",
+        "address_document_type",
+        "address_proof_document",
+        "disabilityCategory",
+        "otherDisability",
+        "disabilityPercentage",
+        "disabilityDocuments",
+        "familyMemberName",
+        "relationship",
+        "familyepicNumber",
+        "place_of_birth",
+        "state_of_birth",
+        "district_of_birth",
+        "resident_since",
+        "application_date",
+        "application_reference_number",
+        "epic_number",
+    )
+
+
+admin.site.register(NewVoteRegistrationData, NewVoteRegistrationDataAdmin)

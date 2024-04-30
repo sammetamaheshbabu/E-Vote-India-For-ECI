@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E Voter Portal</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      window.theme = {
+        a: "#fffb00", // Party A
+        b: "#ffffff", // Party B
+        c: "#1f6f36", // Party C
+        d: "#fa8219", // Party D
+        e: "#ff3411", // Party E
+        f: "#a11f25", // Party F
+        g: "#1169b8", // Party G
+        nota: "#090909", // None of the Above (NOTA)
+      };
+    </script>
+  </head>
+  <body class="bg-secondary bg-opacity-25 fs-5">
+    {% include "main_head_arelt.html" %} {% include "main_navbar.html" %}
+
+    <!-- Main Content -->
+    <div class="container border rounded mt-2 mb-3">
+      <div class="row justify-content-center">
+        <div class="text-center">
+          <div class="card bg-primary bg-opacity-10">
+            <div class="card-body">
+              <h2 class="text-center mb-4">Welcome to the E Vote Results</h2>
+              <p
+                class="current-time h6 text-center mb-4"
+                id="currentTimeDisplay"
+              ></p>
+              <button
+                type="button"
+                class="btn btn-success d-block mx-auto mb-3"
+                id="refreshButton"
+              >
+                Refresh
+              </button>
+              <p
+                class="update-time h6 text-center mb-0"
+                id="updateTimeDisplay"
+              ></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--table Results-->
+    <div class="container bg-primary bg-opacity-10 border rounded mt-2 mb-3">
+      <div class="row justify-content-center">
+        <div class="text-center">
+          <table class="table table-bordered border-primary">
+            <thead>
+              <tr>
+                <th>Party Name</th>
+                <th>Party (A)</th>
+                <th>Party (B)</th>
+                <th>Party (C)</th>
+                <th>Party (D)</th>
+                <th>Party (E)</th>
+                <th>Party (F)</th>
+                <th>Party (G)</th>
+                <th>None of the Above(NOTA)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>Symbol</th>
+                <td>
+                  <img src="{% static "party_logos/A.png" %}" alt="A Logo"
+                  class="img-thumbnail"style="width: 100px; height: 100px;" />
+                </td>
+                <td>
+                  <img
+                    src="{% static 'party_logos/B.png' %}"
+                    alt="B Logo"
+                    class="img-thumbnail"
+                    style="width: 100px; height: 100px"
+                  />
+                </td>
+                <td>
+                  <img
+                    src="{% static 'party_logos/C.png' %}"
+                    alt="C Logo"
+                    class="img-thumbnail"
+                    style="width: 100px; height: 100px"
+                  />
+                </td>
+                <td>
+                  <img
+                    src="{% static 'party_logos/D.png' %}"
+                    alt="D Logo"
+                    class="img-thumbnail"
+                    style="width: 100px; height: 100px"
+                  />
+                </td>
+                <td>
+                  <img
+                    src="{% static 'party_logos/E.png' %}"
+                    alt="E Logo"
+                    class="img-thumbnail"
+                    style="width: 100px; height: 100px"
+                  />
+                </td>
+                <td>
+                  <img
+                    src="{% static 'party_logos/F.png' %}"
+                    alt="F Logo"
+                    class="img-thumbnail"
+                    style="width: 100px; height: 100px"
+                  />
+                </td>
+                <td>
+                  <img
+                    src="{% static 'party_logos/G.png' %}"
+                    alt="G Logo"
+                    class="img-thumbnail"
+                    style="width: 100px; height: 100px"
+                  />
+                </td>
+                <td>
+                  <img
+                    src="{% static 'party_logos/nota.png' %}"
+                    alt="NOTA Logo"
+                    class="img-thumbnail"
+                    style="width: 100px; height: 100px"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <th>Total Votes</th>
+                <td>{{ A_votes }}</td>
+                <td>{{ B_votes }}</td>
+                <td>{{ C_votes }}</td>
+                <td>{{ D_votes }}</td>
+                <td>{{ E_votes }}</td>
+                <td>{{ F_votes }}</td>
+                <td>{{ G_votes }}</td>
+                <td>{{ nota_votes }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!--chart-->
+    <div class="container mt-3">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <canvas id="chartjs-pie" width="400" height="400"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!--footer-->
+    <footer class="container-fluid text-center mt-3">
+      <div class="copyRights">
+        © Copyright E voter portal 2024<span style="color: rgb(7, 48, 89)"
+          >| V 1.0</span
+        >
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- ChartJS Pie -->
+    <script>
+      new Chart(document.getElementById("chartjs-pie"), {
+          type: "pie",
+          data: {
+              labels: ["A", "B", "C", "D", "E", "F", "G", "NOTA"],
+              datasets: [{
+                  data: [{{ A_votes }}, {{ B_votes }}, {{ C_votes }}, {{ D_votes }}, {{ E_votes }}, {{ F_votes }}, {{ G_votes }}, {{ nota_votes }}],
+                  backgroundColor: [
+                    window.theme.a,    // Party A
+                    window.theme.b,    // Party B
+                    window.theme.c,    // Party C
+                    window.theme.d,    // Party D
+                    window.theme.e,    // Party E
+                    window.theme.f,   // Party F
+                    window.theme.g,  // Party G
+                    window.theme.nota,   // None of the Above (NOTA)
+                ],
+
+                  borderColor: "transparent"
+              }]
+          },
+          options: {
+              maintainAspectRatio: false,
+              cutoutPercentage: 65,
+          }
+      });
+    </script>
+
+    <!-- for current time-->
+    <script>
+      const currentTimeDisplay = document.getElementById("currentTimeDisplay");
+
+      function updateDateTime() {
+        const now = new Date();
+        const formattedTime = now.toLocaleString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        });
+        currentTimeDisplay.textContent = "Current Time : " + formattedTime;
+      } // Automatic refresh every 3 seconds
+
+      setInterval(updateDateTime, 1000); // 3000 milliseconds = 3 seconds
+
+      updateDateTime(); // Display initial time on page load
+    </script>
+
+    <!--for the refresh-->
+    <script>
+      const refreshButton = document.getElementById("refreshButton");
+      const updateTimeDisplay = document.getElementById("updateTimeDisplay");
+
+      function updateDateTime() {
+        const now = new Date();
+        const formattedTime = now.toLocaleString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        });
+        updateTimeDisplay.textContent = "Last Update : " + formattedTime;
+      } // Update date and time on page load
+
+      updateDateTime(); // Reload the page when the button is clicked
+
+      refreshButton.addEventListener("click", () => {
+        window.location.reload(); // Use window.location.reload() to refresh the page
+      });
+    </script>
+  </body>
+</html>

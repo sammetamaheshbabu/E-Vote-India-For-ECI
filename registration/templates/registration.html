@@ -1,0 +1,1884 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  {% load static %}
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>E voter portal</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
+  <!-- style for Captcha image-->
+  <style>
+    #captchaContainer {
+      font-size: 24px;
+      color: #ffffff;
+      text-shadow: 2px 2px #000;
+      letter-spacing: 5px;
+      user-select: none;
+      background-image: url("{% static 'captcha_GB.png' %}");
+      padding: 10px;
+      border-radius: 5px;
+      display: inline-block;
+    }
+
+    /* Style for the refresh button */
+    #refreshCaptcha {
+      margin-top: 10px;
+      color: weight;
+    }
+  </style>
+
+  <!-- style for the popup window -->
+
+  <style>
+    .popup {
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,
+          0,
+          0,
+          0.4);
+      display: none;
+    }
+
+    .popup-content {
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid #888888;
+      width: 90%;
+    }
+
+    .show {
+      display: block;
+    }
+  </style>
+
+  <!-- jQuery -->
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css" />
+  <!-- Custom styles for the datepicker -->
+  <style>
+    .ui-datepicker-header {
+      background-color: #337ab7;
+      /* Header background color */
+      color: #33fff8;
+      /* Header text color */
+      border: none;
+      /* Remove border */
+    }
+
+    .ui-datepicker-title {
+      text-align: center;
+      /* Center align the title */
+    }
+
+    .ui-datepicker-prev,
+    .ui-datepicker-next {
+      background-color: #337ab7;
+      /* Previous and next button background color */
+      color: #ffffff;
+      /* Previous and next button text color */
+      border: none;
+      /* Remove border */
+    }
+
+    .ui-datepicker-calendar {
+      margin-top: 10px;
+      /* Add some margin to the calendar */
+    }
+
+    .ui-datepicker-calendar th {
+      background-color: #337ab7;
+      /* Calendar header background color */
+      color: #ffffff;
+      /* Calendar header text color */
+    }
+
+    .ui-datepicker-calendar td {
+      padding: 5px;
+      /* Add padding to calendar cells */
+    }
+
+    .ui-datepicker-calendar, .ui-state-default {
+      background-color: #ffffff;
+      /* Default day background color */
+    }
+
+    .ui-datepicker-calendar .ui-state-hover {
+      background-color: #f0f0f0;
+      /* Hovered day background color */
+    }
+
+    .ui-datepicker-calendar .ui-state-active {
+      background-color: #337ab7;
+      /* Selected day background color */
+      color: #ffffff;
+      /* Selected day text color */
+    }
+  </style>
+</head>
+
+<body class="bg-secondary bg-opacity-25 fs-5">
+  {% include "main_head_arelt.html" %} {% include "main_navbar.html" %}
+
+  <div class="container bg-light col-xl-10 col-lg-12 col-md-9 mt-2 mb-3 ">
+    <div class="row justify-content-center">
+      <div class="text-center">
+        <h2 class="mb-4">Voter Registration Form</h2>
+        <form method="POST" enctype="multipart/form-data" id="myForm">
+          {% csrf_token %}
+          <!-- Section A: select state, district & assembly constueney. -->
+          <div class="container border rounded bg-primary bg-opacity-25 p-4 Section_A">
+            <div class="row justify-content-center">
+              <div class="col-md-8">
+                {% csrf_token %}
+                <h2 class="mt-4">
+                  A: select state, district & assembly constueney.
+                </h2>
+                <p class="h6" style="color:#ff7575">
+                  For the experimental purpose we added only Andhra Pradesh
+                  districts and assembly constitutions.
+                </p>
+                <div class="mb-3">
+                  <label for="state" class="form-label">State</label>
+                  <select class="form-select" id="state" name="state" required>
+                    <option value="">Select State</option>
+                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                    <option value="Arunachal Pradesh">
+                      Arunachal Pradesh
+                    </option>
+                    <option value="Assam">Assam</option>
+                    <option value="Bihar">Bihar</option>
+                    <option value="Chhattisgarh">Chhattisgarh</option>
+                    <option value="Goa">Goa</option>
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Haryana">Haryana</option>
+                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                    <option value="Jammu and Kashmir">
+                      Jammu and Kashmir
+                    </option>
+                    <option value="Jharkhand">Jharkhand</option>
+                    <option value="Karnataka">Karnataka</option>
+                    <option value="Kerala">Kerala</option>
+                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Manipur">Manipur</option>
+                    <option value="Meghalaya">Meghalaya</option>
+                    <option value="Mizoram">Mizoram</option>
+                    <option value="Nagaland">Nagaland</option>
+                    <option value="Odisha">Odisha</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="Rajasthan">Rajasthan</option>
+                    <option value="Sikkim">Sikkim</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Telangana">Telangana</option>
+                    <option value="Tripura">Tripura</option>
+                    <option value="Uttarakhand">Uttarakhand</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="West Bengal">West Bengal</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="district" class="form-label">District</label>
+                  <select class="form-select" id="district" name="district" required disabled>
+                    <option value="">Select District</option>
+                    <option value="Nandamuri Taraka Rama Rao">
+                      Nandamuri Taraka Rama Rao
+                    </option>
+                    <option value="YSR Kadapa">YSR Kadapa</option>
+                    <option value="Srikakulam">Srikakulam</option>
+                    <option value="Annamayya">Annamayya</option>
+                    <option value="Kurnool">Kurnool</option>
+                    <option value="Anantapuram">Anantapuram</option>
+                    <option value="East Godavari">East Godavari</option>
+                    <option value="Prakasam">Prakasam</option>
+                    <option value="Visakhapatnam">Visakhapatnam</option>
+                    <option value="Chittoor">Chittoor</option>
+                    <option value="Sri Potti Sriramulu Nellore">
+                      Sri Potti Sriramulu Nellore
+                    </option>
+                    <option value="Tirupati">Tirupati</option>
+                    <option value="Eluru">Eluru</option>
+                    <option value="Guntur">Guntur</option>
+                    <option value="Konaseema">Konaseema</option>
+                    <option value="Palnadu">Palnadu</option>
+                    <option value="Anakapalli">Anakapalli</option>
+                    <option value="Parvathipuram Manyam">
+                      Parvathipuram Manyam
+                    </option>
+                    <option value="Nandyala">Nandyala</option>
+                    <option value="Krishna">Krishna</option>
+                    <option value="Vizianagaram">Vizianagaram</option>
+                    <option value="Kakinada">Kakinada</option>
+                    <option value="Sri Sathya Sai">Sri Sathya Sai</option>
+                    <option value="West Godavari">West Godavari</option>
+                    <option value="Alluri Sitarama Raju">
+                      Alluri Sitarama Raju
+                    </option>
+                    <option value="Bapatla">Bapatla</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="assembly_constituency" class="form-label">Assembly Constituency</label>
+                  <select class="form-select" id="assembly_constituency" name="assembly_constituency" required disabled>
+                    <option value="">Select Assembly Constituency</option>
+                    <option value="">Select Assembly Constituency</option>
+                    <option value="Amadalavalasa">Amadalavalasa</option>
+                    <option value="Etcherla">Etcherla</option>
+                    <option value="Ichchapuram">Ichchapuram</option>
+                    <option value="Narasannapeta">Narasannapeta</option>
+                    <option value="Palasa">Palasa</option>
+                    <option value="Pathapatnam">Pathapatnam</option>
+                    <option value="Srikakulam">Srikakulam</option>
+                    <option value="Tekkali">Tekkali</option>
+                    <option value="Parvathipuram">Parvathipuram</option>
+                    <option value="Palakonda">Palakonda</option>
+                    <option value="Kurupam">Kurupam</option>
+                    <option value="Saluru">Saluru</option>
+                    <option value="Bobbili">Bobbili</option>
+                    <option value="Cheepurupalli">Cheepurupalli</option>
+                    <option value="Gajapathinagaram">Gajapathinagaram</option>
+                    <option value="Nellimarla">Nellimarla</option>
+                    <option value="Srungavarapukota">Srungavarapukota</option>
+                    <option value="Rajam">Rajam</option>
+                    <option value="Vizianagaram">Vizianagaram</option>
+                    <option value="Bheemili">Bheemili</option>
+                    <option value="Gajuwaka">Gajuwaka</option>
+                    <option value="Pendurthi">Pendurthi</option>
+                    <option value="Visakhapatnam Thurpu">
+                      Visakhapatnam Thurpu
+                    </option>
+                    <option value="Visakhapatnam Uttaram">
+                      Visakhapatnam Uttaram
+                    </option>
+                    <option value="Visakhapatnam Dakhinam">
+                      Visakhapatnam Dakhinam
+                    </option>
+                    <option value="Visakhapatnam Padamara">
+                      Visakhapatnam Padamara
+                    </option>
+                    <option value="Chodavaram">Chodavaram</option>
+                    <option value="Madugula">Madugula</option>
+                    <option value="Anakapalli">Anakapalli</option>
+                    <option value="Pendurthi">Pendurthi</option>
+                    <option value="Elamanchili">Elamanchili</option>
+                    <option value="Payakaraopeta">Payakaraopeta</option>
+                    <option value="Narsipatnam">Narsipatnam</option>
+                    <option value="Araku Loya">Araku Loya</option>
+                    <option value="Paderu">Paderu</option>
+                    <option value="Rampachodavaram">Rampachodavaram</option>
+                    <option value="Jaggampeta">Jaggampeta</option>
+                    <option value="Kakinada Nagaram">Kakinada Nagaram</option>
+                    <option value="Kakinada Graminam">
+                      Kakinada Graminam
+                    </option>
+                    <option value="Peddapuram">Peddapuram</option>
+                    <option value="Pithapuram">Pithapuram</option>
+                    <option value="Prathipadu">Prathipadu</option>
+                    <option value="Tuni">Tuni</option>
+                    <option value="Anaparthy">Anaparthy</option>
+                    <option value="Rajanagaram">Rajanagaram</option>
+                    <option value="Rajamahendravaram City">
+                      Rajamahendravaram City
+                    </option>
+                    <option value="Rajamahendravaram Rural">
+                      Rajamahendravaram Rural
+                    </option>
+                    <option value="Kovvuru">Kovvuru</option>
+                    <option value="Nidadavole">Nidadavole</option>
+                    <option value="Gopalapuram">Gopalapuram</option>
+                    <option value="Ramachandrapuram">Ramachandrapuram</option>
+                    <option value="Mummidivaram">Mummidivaram</option>
+                    <option value="Amalapuram">Amalapuram</option>
+                    <option value="Razole">Razole</option>
+                    <option value="Gannavaram">Gannavaram</option>
+                    <option value="Kothapeta">Kothapeta</option>
+                    <option value="Mandapeta">Mandapeta</option>
+                    <option value="Unguturu">Unguturu</option>
+                    <option value="Denduluru">Denduluru</option>
+                    <option value="Eluru">Eluru</option>
+                    <option value="Polavaram">Polavaram</option>
+                    <option value="Chintalapudi">Chintalapudi</option>
+                    <option value="Nuzavidu">Nuzavidu</option>
+                    <option value="Kaikaluru">Kaikaluru</option>
+                    <option value="Bhimavaram">Bhimavaram</option>
+                    <option value="Narasapuram">Narasapuram</option>
+                    <option value="Palakollu">Palakollu</option>
+                    <option value="Tadepalligudem">Tadepalligudem</option>
+                    <option value="Tanuku">Tanuku</option>
+                    <option value="Undi">Undi</option>
+                    <option value="Unguturu">Unguturu</option>
+                    <option value="Tiruvuru">Tiruvuru</option>
+                    <option value="Gannavaram (Part)">
+                      Gannavaram (Part)
+                    </option>
+                    <option value="Vijayawada Pdamara">
+                      Vijayawada Pdamara
+                    </option>
+                    <option value="Vijayawada Madya">Vijayawada Madya</option>
+                    <option value="Vijayawada Thurpu">
+                      Vijayawada Thurpu
+                    </option>
+                    <option value="Mylavaram">Mylavaram</option>
+                    <option value="Nandigama">Nandigama</option>
+                    <option value="Jaggayyapeta">Jaggayyapeta</option>
+                    <option value="Avanigadda">Avanigadda</option>
+                    <option value="Gannavaram (Part)">
+                      Gannavaram (Part)
+                    </option>
+                    <option value="Gudivada">Gudivada</option>
+                    <option value="Pedana">Pedana</option>
+                    <option value="Machilipatnam">Machilipatnam</option>
+                    <option value="Machilipatnam">Machilipatnam</option>
+                    <option value="Pamarru">Pamarru</option>
+                    <option value="Penamaluru">Penamaluru</option>
+                    <option value="Tadikonda">Tadikonda</option>
+                    <option value="Mangalagiri">Mangalagiri</option>
+                    <option value="Ponnuru">Ponnuru</option>
+                    <option value="Tenali">Tenali</option>
+                    <option value="Prathipadu">Prathipadu</option>
+                    <option value="Gunturu Padamara">Gunturu Padamara</option>
+                    <option value="Gunturu Thurpu">Gunturu Thurpu</option>
+                    <option value="Narasaraopet">Narasaraopet</option>
+                    <option value="Chilakaluripet">Chilakaluripet</option>
+                    <option value="Sattenapalle">Sattenapalle</option>
+                    <option value="Gurazala">Gurazala</option>
+                    <option value="Pedakurapadu">Pedakurapadu</option>
+                    <option value="Macherla">Macherla</option>
+                    <option value="Vinukonda">Vinukonda</option>
+                    <option value="Vemuru">Vemuru</option>
+                    <option value="Repalle">Repalle</option>
+                    <option value="Bapatla">Bapatla</option>
+                    <option value="Parchuru">Parchuru</option>
+                    <option value="Addanki">Addanki</option>
+                    <option value="Chirala">Chirala</option>
+                    <option value="Santhanuthalapadu">
+                      Santhanuthalapadu
+                    </option>
+                    <option value="Yerragondapalem">Yerragondapalem</option>
+                    <option value="Darsi">Darsi</option>
+                    <option value="Ongole">Ongole</option>
+                    <option value="Kondapi">Kondapi</option>
+                    <option value="Markapuram">Markapuram</option>
+                    <option value="Giddaluru">Giddaluru</option>
+                    <option value="Kanigiri">Kanigiri</option>
+                    <option value="Sarvepalli">Sarvepalli</option>
+                    <option value="Kandukuru">Kandukuru</option>
+                    <option value="Kavali">Kavali</option>
+                    <option value="Atmakuru">Atmakuru</option>
+                    <option value="Kovuru">Kovuru</option>
+                    <option value="Nellore Nagaram">Nellore Nagaram</option>
+                    <option value="Nellore Graminam">Nellore Graminam</option>
+                    <option value="Udayagiri">Udayagiri</option>
+                    <option value="Kurnool">Kurnool</option>
+                    <option value="Kodumuru">Kodumuru</option>
+                    <option value="Yemmiganur">Yemmiganur</option>
+                    <option value="Mantralayam">Mantralayam</option>
+                    <option value="Adoni">Adoni</option>
+                    <option value="Aluru">Aluru</option>
+                    <option value="Pattikonda">Pattikonda</option>
+                    <option value="Panyam (partially)">
+                      Panyam (partially)
+                    </option>
+                    <option value="Allagadda">Allagadda</option>
+                    <option value="Srisailam">Srisailam</option>
+                    <option value="Nandikotkuru">Nandikotkuru</option>
+                    <option value="Nandyala">Nandyala</option>
+                    <option value="Banaganapalle">Banaganapalle</option>
+                    <option value="Dhonachalam">Dhonachalam</option>
+                    <option value="Panyam (partially)">
+                      Panyam (partially)
+                    </option>
+                    <option value="Badvelu">Badvelu</option>
+                    <option value="Jammalamadugu">Jammalamadugu</option>
+                    <option value="Kadapa">Kadapa</option>
+                    <option value="Kamalapuram">Kamalapuram</option>
+                    <option value="Mydukuru">Mydukuru</option>
+                    <option value="Proddaturu">Proddaturu</option>
+                    <option value="Pulivendula">Pulivendula</option>
+                    <option value="Rajampeta (partial)">
+                      Rajampeta (partial)
+                    </option>
+                    <option value="Raptadu">Raptadu</option>
+                    <option value="Rayadurgam">Rayadurgam</option>
+                    <option value="Uravakonda">Uravakonda</option>
+                    <option value="Guntakallu">Guntakallu</option>
+                    <option value="Tadpatri">Tadpatri</option>
+                    <option value="Singanamala">Singanamala</option>
+                    <option value="Anantapuram Nagaram">
+                      Anantapuram Nagaram
+                    </option>
+                    <option value="Kalyandurgam">Kalyandurgam</option>
+                    <option value="Madakasira">Madakasira</option>
+                    <option value="Hindupuram">Hindupuram</option>
+                    <option value="Penukonda">Penukonda</option>
+                    <option value="Puttaparthi">Puttaparthi</option>
+                    <option value="Dharmavaram">Dharmavaram</option>
+                    <option value="Kadiri">Kadiri</option>
+                    <option value="Rajampeta (partially)">
+                      Rajampeta (partially)
+                    </option>
+                    <option value="Koduru">Koduru</option>
+                    <option value="Rayachoti">Rayachoti</option>
+                    <option value="Thamballapalle">Thamballapalle</option>
+                    <option value="Pileru">Pileru</option>
+                    <option value="Madanapalle">Madanapalle</option>
+                    <option value="Punganur">Punganur</option>
+                    <option value="Tirupati">Tirupati</option>
+                    <option value="Sullurpeta">Sullurpeta</option>
+                    <option value="Venkatagiri">Venkatagiri</option>
+                    <option value="Guduru">Guduru</option>
+                    <option value="Srikalahasti">Srikalahasti</option>
+                    <option value="Satyavedu">Satyavedu</option>
+                    <option value="Chandragiri">Chandragiri</option>
+                    <option value="Chittoor">Chittoor</option>
+                    <option value="Gangadhara Nellore (SC)">
+                      Gangadhara Nellore (SC)
+                    </option>
+                    <option value="Kuppam">Kuppam</option>
+                    <option value="Nagari">Nagari</option>
+                    <option value="Palamaneru">Palamaneru</option>
+                    <option value="Puthalapattu">Puthalapattu</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section B: Personal Details. -->
+          <div class="container border rounded bg-primary bg-opacity-25 p-4 Section_B">
+            <h2 class="mt-4">B: Personal Details</h2>
+            <div class="row justify-content-center">
+              <div class="col-md-4 mb-3">
+                <label for="first_name" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="first_name" name="first_name" required />
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="middle_name" class="form-label">Middle Name (Optional)</label>
+                <input type="text" class="form-control" id="middle_name" name="middle_name" />
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="surname" class="form-label">Surname</label>
+                <input type="text" class="form-control" id="surname" name="surname" required />
+              </div>
+            </div>
+            <div class="row justify-content-center">
+              <div class="col-md-8 mb-3">
+                <div class="justify-content-md-center mb-3">
+                  <label for="photo" class="form-label">Photo (JPEG or PNG, Max 2 MB)</label>
+                  <input type="file" class="form-control" id="photo" name="photo" accept=".jpg,.jpeg,.png" required />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section C: name and surname of any one of the relatives -->
+          <div class="container border rounded bg-primary bg-opacity-25 p-4 Section_C">
+            <h2 class="mt-4">
+              C: name and surname of any one of the relatives.
+            </h2>
+            <div class="mb-3">
+              <label for="relative_type" class="form-label">Relative</label>
+              <div class="btn-group" role="group" aria-labelledby="relative_type" id="relative_type"
+                name="relative_type">
+                <input type="radio" class="btn-check" id="relative_father" name="relative_type" value="father"
+                  required />
+                <label for="relative_father" class="btn btn-outline-primary">Father</label>
+
+                <input type="radio" class="btn-check" id="relative_mother" name="relative_type" value="mother" />
+                <label for="relative_mother" class="btn btn-outline-primary">Mother</label>
+
+                <input type="radio" class="btn-check" id="relative_husband" name="relative_type" value="husband" />
+                <label for="relative_husband" class="btn btn-outline-primary">Husband</label>
+
+                <input type="radio" class="btn-check" id="relative_wife" name="relative_type" value="wife" />
+                <label for="relative_wife" class="btn btn-outline-primary">Wife</label>
+
+                <input type="radio" class="btn-check" id="relative_guardian" name="relative_type"
+                  value="legal_guardian" />
+                <label for="relative_guardian" class="btn btn-outline-primary">Legal Guardian</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="relative_name" class="form-label">Relative's Name</label>
+                <input type="text" class="form-control" id="relative_name" name="relative_name" required />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="relative_surname" class="form-label">Relative's Surname</label>
+                <input type="text" class="form-control" id="relative_surname" name="relative_surname" required />
+              </div>
+            </div>
+          </div>
+
+          <!-- Section D: Contact Details -->
+          <div class="container border rounded bg-primary bg-opacity-25 p-4 Section_D">
+            <h2 class="mt-4">D: Contact Details</h2>
+            <p class="h5 mt-4">Mobile Number</p>
+            <div class="row justify-content-center">
+              <div class="mb-3">
+                <label class="form-label">Mobile Ownership:</label>
+                <div class="btn-group" role="group">
+                  <input type="radio" class="btn-check" id="mobile_self" name="mobile_ownership" value="self"
+                    autocomplete="off" required />
+                  <label class="btn btn-outline-primary" for="mobile_self">Self</label>
+                  <input type="radio" class="btn-check" id="mobile_relative" name="mobile_ownership" value="relative"
+                    autocomplete="off" />
+                  <label class="btn btn-outline-primary" for="mobile_relative">Relative Mentioned Above</label>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="mobile_number" class="form-label">Mobile Number</label>
+                <input type="tel" class="form-control" id="mobile_number" name="mobile_number" />
+              </div>
+            </div>
+            <p class="h5 mt-4">Email ID</p>
+            <div class="mb-3">
+              <label class="form-label">Email Ownership:</label>
+              <div class="btn-group" role="group">
+                <input type="radio" class="btn-check" id="email_self" name="email_ownership" value="self"
+                  autocomplete="off" required />
+                <label class="btn btn-outline-primary" for="email_self">Self</label>
+                <input type="radio" class="btn-check" id="email_relative" name="email_ownership" value="relative"
+                  autocomplete="off" />
+                <label class="btn btn-outline-primary" for="email_relative">Relative Mentioned Above</label>
+              </div>
+            </div>
+            <div class="row justify-content-center">
+              <div class="col-md-6 mb-3">
+                <label for="email_id" class="form-label">Email ID</label>
+                <input type="email" class="form-control" id="email_id" name="email_id" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Section E: Aadhaar Details -->
+          <div class="container border rounded bg-primary bg-opacity-25 p-4 Section_E">
+            <h2 class="mt-4">E: Aadhaar Details</h2>
+            <div class="mb-3">
+              <label for="aadhaar_availability" class="form-label">Do you have an Aadhaar card?
+              </label>
+              <div class="btn-group" role="group" aria-labelledby="aadhaar_availability">
+                <input type="radio" class="btn-check" id="aadhaar_yes" name="aadhaar_availability" value="yes"
+                  required />
+                <label for="aadhaar_yes" class="btn btn-outline-primary">Yes</label>
+                <input type="radio" class="btn-check" id="aadhaar_no" name="aadhaar_availability" value="no" checked />
+                <label for="aadhaar_no" class="btn btn-outline-primary">No</label>
+              </div>
+            </div>
+            <div class="row justify-content-center">
+              <div class="col-md-8 mb-3">
+                <label for="aadhaar_number" class="form-label">Aadhaar Number</label>
+                <input type="text" class="form-control" id="aadhaar_number" name="aadhaar_number" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Section F : Gender  -->
+          <div class="container border rounded bg-primary bg-opacity-25 p-4 Section_F">
+            <h2>F: Gender</h2>
+            <div class="mb-3">
+              <label class="form-label">Gender Identity</label>
+              <div class="btn-group" role="group">
+                <input type="radio" class="btn-check" id="gender_male" name="gender" value="male" required />
+                <label for="gender_male" class="btn btn-outline-primary">Male</label>
+                <input type="radio" class="btn-check" id="gender_female" name="gender" value="female" />
+                <label for="gender_female" class="btn btn-outline-primary">Female</label>
+                <input type="radio" class="btn-check" id="gender_transgender" name="gender" value="transgender" />
+                <label for="gender_transgender" class="btn btn-outline-primary">Transgender</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section G: Date of Birth Details -->
+          <div class="container border rounded bg-primary bg-opacity-25 p-4 Section_G">
+            <h3>G. Date of Birth Details</h3>
+            <div class="row justify-content-center">
+              <div class="col-md-8">
+                <div class="mb-3">
+                  <label for="dob" class="form-label">Date of Birth</label>
+                  <input type="date" id="dob" name="dob" class="form-control" required readonly />
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Document Proof of Age</label><br />
+
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="proof_of_age" id="birth_certificate"
+                      value="birth_certificate" />
+                    <label class="form-check-label" for="birth_certificate">Birth Certificate</label>
+                  </div>
+
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="proof_of_age" id="other_document"
+                      value="other_document" />
+                    <label class="form-check-label" for="other_document">Any Other Document</label>
+                  </div>
+                </div>
+
+                <div class="mb-3" id="document_selection">
+                  <label for="dob_document_type" class="form-label">Select Document Type (if Any Other Document)</label>
+                  <select class="form-select" id="dob_document_type" name="dob_document_type" disabled>
+                    <option value="">Select Document</option>
+                    <option value="aadhaar_card">Aadhaar Card</option>
+                    <option value="pan_card">PAN Card</option>
+                    <option value="driving_license">Driving License</option>
+                    <option value="education_certificate">
+                      Certificates of Class X or Class XII (if containing DoB)
+                    </option>
+                    <option value="passport">Indian Passport</option>
+                  </select>
+                </div>
+
+                <div class="mb-3" id="document_upload">
+                  <label for="dob_document" class="form-label">Upload Document</label>
+                  <input type="file" id="dob_document" name="dob_document" class="form-control"
+                    accept="image/jpeg,image/png,application/pdf" disabled />
+                  <p class="text-muted">
+                    Document size Maximum 2 MB (JPG, PNG, PDF)
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section H: Present address details -->
+          <!-- Section 8(a): Present Ordinary Residence -->
+          <div class="container border rounded bg-primary bg-opacity-25 p-4 Section_H">
+            <h2>H: Present Address Details</h2>
+            <p class="h5 m-3">
+              Section 8(a): Present Ordinary Residence (Full Address)
+            </p>
+            <div class="row justify-content-center">
+              <div class="col-md-auto mb-3">
+                <label for="house-no" class="form-label">1. House/Building/Apartment No:</label>
+                <input type="text" class="form-control" id="house_no" name="house_no" required />
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="street" class="form-label">2. Street/Area/Landmark:</label>
+                <input type="text" class="form-control" id="street" name="street" required />
+              </div>
+              <div class="col-md-4 mb-3">
+                <labe for="village-town" class="form-label">3. Village/Town:</label>
+                  <input type="text" class="form-control" id="village_town" name="village_town" required />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="post-office" class="form-label">4. Post Office:</label>
+                <input type="text" class="form-control" id="post_office" name="post_office" required />
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="pin-code" class="form-label">5. Pin Code:</label>
+                <input type="text" class="form-control" id="pin_code" name="pin_code" required />
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="mandal" class="form-label">6. Mandal:</label>
+                <input type="text" class="form-control" id="mandal" name="mandal" required />
+              </div>
+            </div>
+            <p class="h6" style="color:#ff7575">
+              For the experimental purpose we added only Andhra Pradesh
+              districts .
+            </p>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="state" class="form-label">7. State:</label>
+                <select class="form-select" id="state_address" name="state_address" required>
+                  <option value="">Select State</option>
+                  <option value="Andhra Pradesh">Andhra Pradesh</option>
+                  <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                  <option value="Assam">Assam</option>
+                  <option value="Bihar">Bihar</option>
+                  <option value="Chhattisgarh">Chhattisgarh</option>
+                  <option value="Goa">Goa</option>
+                  <option value="Gujarat">Gujarat</option>
+                  <option value="Haryana">Haryana</option>
+                  <option value="Himachal Pradesh">Himachal Pradesh</option>
+                  <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                  <option value="Jharkhand">Jharkhand</option>
+                  <option value="Karnataka">Karnataka</option>
+                  <option value="Kerala">Kerala</option>
+                  <option value="Madhya Pradesh">Madhya Pradesh</option>
+                  <option value="Maharashtra">Maharashtra</option>
+                  <option value="Manipur">Manipur</option>
+                  <option value="Meghalaya">Meghalaya</option>
+                  <option value="Mizoram">Mizoram</option>
+                  <option value="Nagaland">Nagaland</option>
+                  <option value="Odisha">Odisha</option>
+                  <option value="Punjab">Punjab</option>
+                  <option value="Rajasthan">Rajasthan</option>
+                  <option value="Sikkim">Sikkim</option>
+                  <option value="Tamil Nadu">Tamil Nadu</option>
+                  <option value="Telangana">Telangana</option>
+                  <option value="Tripura">Tripura</option>
+                  <option value="Uttarakhand">Uttarakhand</option>
+                  <option value="Uttar Pradesh">Uttar Pradesh</option>
+                  <option value="West Bengal">West Bengal</option>
+                </select>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="district" class="form-label">8. District:</label>
+                <select class="form-select" id="district_address" name="district_address" required disabled>
+                  <option value="">Select District</option>
+                  <option value="Nandamuri Taraka Rama Rao">
+                    Nandamuri Taraka Rama Rao
+                  </option>
+                  <option value="YSR Kadapa">YSR Kadapa</option>
+                  <option value="Srikakulam">Srikakulam</option>
+                  <option value="Annamayya">Annamayya</option>
+                  <option value="Kurnool">Kurnool</option>
+                  <option value="Anantapuram">Anantapuram</option>
+                  <option value="East Godavari">East Godavari</option>
+                  <option value="Prakasam">Prakasam</option>
+                  <option value="Visakhapatnam">Visakhapatnam</option>
+                  <option value="Chittoor">Chittoor</option>
+                  <option value="Sri Potti Sriramulu Nellore">
+                    Sri Potti Sriramulu Nellore
+                  </option>
+                  <option value="Tirupati">Tirupati</option>
+                  <option value="Eluru">Eluru</option>
+                  <option value="Guntur">Guntur</option>
+                  <option value="Konaseema">Konaseema</option>
+                  <option value="Palnadu">Palnadu</option>
+                  <option value="Anakapalli">Anakapalli</option>
+                  <option value="Parvathipuram Manyam">
+                    Parvathipuram Manyam
+                  </option>
+                  <option value="Nandyala">Nandyala</option>
+                  <option value="Krishna">Krishna</option>
+                  <option value="Vizianagaram">Vizianagaram</option>
+                  <option value="Kakinada">Kakinada</option>
+                  <option value="Sri Sathya Sai">Sri Sathya Sai</option>
+                  <option value="West Godavari">West Godavari</option>
+                  <option value="Nandamuri Taraka Rama Rao">
+                    Alluri Sitarama Raju
+                  </option>
+                  <option value="Bapatla">Bapatla</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Section 8(b): Proof of Residence -->
+            <p class="h5 m-3">
+              Section 8(b): Self-attached copy of address proof
+            </p>
+            <div class="row justify-content-center">
+              <div class="col-md-4 form-check">
+                <input class="form-check-input" type="radio" name="proof_type" id="proof-type-document" value="document"
+                  required />
+                <label class="form-check-label" for="proof-type-document">Document for proof of residence</label>
+              </div>
+              <div class="col-md-4 form-check">
+                <input class="form-check-input" type="radio" name="proof_type" id="proof-type-other-document"
+                  value="other-document" />
+                <label class="form-check-label" for="proof-type-other-document">Any other document for proof of
+                  residence</label>
+              </div>
+            </div>
+
+            <!-- Other Document Section -->
+            <div class="row justify-content-center">
+              <div class="col-md-6 mt-4">
+                <label class="form-label">Select Document:</label>
+                <select class="form-select" id="address-document-type" name="address_document_type" disabled>
+                  <option value="">Select Document</option>
+                  <option value="Water/Electricity/Gas Bill">Water/Electricity/Gas connection Bill for that address
+                    (atleast 1 year)
+                  </option>
+                  <option value="Aadhaar Card
+                    ">Aadhaar Card
+                  </option>
+                  <option value="passbook">Current passbook of Nationalized/Scheduled Bank/Post Office
+                  </option>
+                  <option value="Passport">Indian Passport</option>
+                  <option value="KisanBahi">Revenue Department's Land Owning records including KisanBahi
+                  </option>
+                  <option value="Registered Rent Lease Deed">Registered Rent Lease Deed (In case of tenant)</option>
+                  <option value="Registered Sale Deed">Registered Sale Deed (In case of
+                    ownhouse)
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Document Upload Section -->
+            <div class="row justify-content-center m-4">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Upload Document:</label>
+                <input type="file" class="form-control" id="address-proof-document" name="address_proof_document"
+                  accept=".jpg, .jpeg, .png, .pdf" required disabled />
+                <small class="form-text text-muted">Maximum size: 2 MB, allowed formats: JPG, PNG, PDF</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section I : Category of Disability, if any (option) -->
+          <div class="container border rounded bg-primary bg-opacity-25 p-4 Section_I">
+            <h2>I: Disability Information (Optional)</h2>
+            <div class="row justify-content-center">
+              <div class="col-md-8">
+                <div class=" form-group">
+                  <label for="disabilityCategory">Do you have a disability?</label>
+                  <select id="disabilityCategory" name="disabilityCategory" class="form-control">
+                    <option value="">Select a category (if applicable)</option>
+                    <option value="locomotive">Locomotor Disability</option>
+                    <option value="visual">Visual Impairment</option>
+                    <option value="deaf_dumb">
+                      Hearing and Speech Impairment
+                    </option>
+                    <option value="other">Other (please specify)</option>
+                  </select>
+                </div>
+                <div class="form-group" id="otherDisabilityDiv" style="display: none">
+                  <label for="otherDisability">Please specify your disability:</label>
+                  <input type="text" id="otherDisability" name="otherDisability" class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label for="disabilityPercentage">Percentage of Disability (optional):</label>
+                  <input type="number" id="disabilityPercentage" name="disabilityPercentage" min="0" max="100"
+                    class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label for="disabilityDocuments">Upload related documents (optional):</label>
+                  <input type="file" id="disabilityDocuments" name="disabilityDocuments" multiple
+                    class="form-control" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section J :  The details of my family member already included in the electoral roll at current address with whom I currently reside are as under. -->
+          <div class="container border rounded bg-primary bg-opacity-25 p-4 Section_J">
+            <h3>J: Family Member Details</h3>
+            <p class="fs-5">
+              The details of my family member already included in the electoral
+              roll at current address with whom I currently reside are as
+              under.</p>
+            <div class="row justify-content-center">
+              <div class="col-md-8">
+                <fieldset>
+                  <legend>Family Member Information</legend>
+                  <div class="form-group">
+                    <label for="familyMemberName">Name of Family Member:</label>
+                    <input type="text" class="form-control" id="familyMemberName" name="familyMemberName" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="relationship">Relationship with Applicant:</label>
+                    <select class="form-control" id="relationship" name="relationship" required>
+                      <option value="">-- Select Relationship --</option>
+                      <option value="father">Father</option>
+                      <option value="mother">Mother</option>
+                      <option value="brother">Brother</option>
+                      <option value="sister">Sister</option>
+                      <option value="spouse">Spouse</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="familyepicNumber">His/Her EPIC Number:</label>
+                    <input type="text" class="form-control" id="familyepicNumber" name="familyepicNumber"
+                      pattern="[0-9]{10}" title="Please enter a valid 10-digit EPIC number" />
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section K : Declaration -->
+          <div class="container border rounded bg-primary bg-opacity-25 p-4 Section_K">
+            <h2>K: Declaration of Indian Citizenship</h2>
+            <p>
+              I hereby declare, to the best of my knowledge and belief, that I
+              am a citizen of India.
+            </p>
+
+            <div class="row justify-content-center">
+              <div class="col-md-8">
+                <div class="form-group">
+                  <label for="placeOfBirth">Place of Birth:</label>
+                  <input type="text" class="form-control" id="placeOfBirth" name="place_of_birth" required />
+                </div>
+
+                <p class="h6" style="color:#ff7575">
+                  For the experimental purpose we added only Andhra Pradesh
+                  districts
+                </p>
+
+                <div class="form-group">
+                  <label for="state">State:</label>
+                  <select class="form-select" id="state_of_birth" name="state_of_birth" required>
+                    <option value="">Select State</option>
+                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                    <option value="Assam">Assam</option>
+                    <option value="Bihar">Bihar</option>
+                    <option value="Chhattisgarh">Chhattisgarh</option>
+                    <option value="Goa">Goa</option>
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Haryana">Haryana</option>
+                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                    <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                    <option value="Jharkhand">Jharkhand</option>
+                    <option value="Karnataka">Karnataka</option>
+                    <option value="Kerala">Kerala</option>
+                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Manipur">Manipur</option>
+                    <option value="Meghalaya">Meghalaya</option>
+                    <option value="Mizoram">Mizoram</option>
+                    <option value="Nagaland">Nagaland</option>
+                    <option value="Odisha">Odisha</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="Rajasthan">Rajasthan</option>
+                    <option value="Sikkim">Sikkim</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Telangana">Telangana</option>
+                    <option value="Tripura">Tripura</option>
+                    <option value="Uttarakhand">Uttarakhand</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="West Bengal">West Bengal</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="district">District:</label>
+                  <select class="form-select" id="district_of_birth" name="district_of_birth" required>
+                    <option value="">Select District</option>
+                    <option value="Nandamuri Taraka Rama Rao">
+                      Nandamuri Taraka Rama Rao
+                    </option>
+                    <option value="YSR Kadapa">YSR Kadapa</option>
+                    <option value="Srikakulam">Srikakulam</option>
+                    <option value="Annamayya">Annamayya</option>
+                    <option value="Kurnool">Kurnool</option>
+                    <option value="Anantapuram">Anantapuram</option>
+                    <option value="East Godavari">East Godavari</option>
+                    <option value="Prakasam">Prakasam</option>
+                    <option value="Visakhapatnam">Visakhapatnam</option>
+                    <option value="Chittoor">Chittoor</option>
+                    <option value="Sri Potti Sriramulu Nellore">
+                      Sri Potti Sriramulu Nellore
+                    </option>
+                    <option value="Tirupati">Tirupati</option>
+                    <option value="Eluru">Eluru</option>
+                    <option value="Guntur">Guntur</option>
+                    <option value="Konaseema">Konaseema</option>
+                    <option value="Palnadu">Palnadu</option>
+                    <option value="Anakapalli">Anakapalli</option>
+                    <option value="Parvathipuram Manyam">
+                      Parvathipuram Manyam
+                    </option>
+                    <option value="Nandyala">Nandyala</option>
+                    <option value="Krishna">Krishna</option>
+                    <option value="Vizianagaram">Vizianagaram</option>
+                    <option value="Kakinada">Kakinada</option>
+                    <option value="Sri Sathya Sai">Sri Sathya Sai</option>
+                    <option value="West Godavari">West Godavari</option>
+                    <option value="Nandamuri Taraka Rama Rao">
+                      Alluri Sitarama Raju
+                    </option>
+                    <option value="Bapatla">Bapatla</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="residentSince">Resident Since (mm-yyyy):</label>
+                  <input type="month" class="form-control" id="residentSince" name="resident_since" />
+                </div>
+
+                <div class="form-group">
+                  <label for="applicationDate">Application Date:</label>
+                  <input type="date" class="form-control" id="applicationDate" name="application_date" disabled />
+                  <script>
+                    document.getElementById("applicationDate").value = new Date()
+                      .toISOString()
+                      .split("T")[0];
+                  </script>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!--L : Captcha-->
+          <div class="container border rounded bg-primary bg-opacity-25 p-4 Section_L">
+            <div class="row justify-content-center">
+              <div class="container col-md-6 mb-3">
+                <p class="h4">Captcha:</p>
+                <div id="captchaContainer"></div>
+                <label for="captcha"></label>
+                <input type="text" class="form-control mt-2" id="captchaText" name="captcha_text" required />
+                <button type="button" name="refreshCaptcha" id="refreshCaptcha" class="btn btn-lg btn-secondary">
+                  Refresh
+                </button>
+                <!-- Error message for captcha -->
+                <p id="captchaError" class="text-danger"></p>
+              </div>
+            </div>
+          </div>
+
+
+
+          <div class="p-3 justify-content-center">
+            <!--Previw Button-->
+            <button type="button" id="Preview" class="btn btn-lg btn-primary me-4 mt-3">
+              Previw All Details
+            </button>
+
+
+
+            <!-- Include SweetAlert JS -->
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+            <!-- Submit Button -->
+            <button type="submit" value="submit_all" name="submit_all" id="submitAll" class="btn btn-lg btn-primary ms-4 mt-3">
+              Submit Application
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Popup container -->
+  <div id="myPopup" style="display: none">
+    <div class="popup-content">
+      <div class="row bg-warning bg-opacity-25 justify-content-center">
+        <p class="h2 fw-bold text-center m-2">Preview</p>
+        <div class="col-md-6 p-3">
+          <p class="h4 fw-bold">Section A: select state, district & assembly constueney.</p>
+          <p class="h6">State: <span id="popupState"></span></p>
+          <p class="h6">District: <span id="popupDistrict"></span></p>
+          <p class="h6">Assembly Constituency: <span id="popupAssembly"></span></p>
+          <p class="h4 fw-bold">Section B: Personal Details</p>
+          <p class="h6">Name: <span id="popupName"></span></p>
+          <p class="h6">Middle Name: <span id="popupMiddleName"></span></p>
+          <p class="h6">Surname: <span id="popupSurname"></span></p>
+          <imd id="popupPhoto"></imd>
+          <p class="h4 fw-bold">Section C: name and surname of any one of the relatives.</p>
+          <p class="h6">Relative Name: <span id="popupRelativeName"></span></p>
+          <p class="h6">Relative Surname: <span id="popupRelativeSurname"></span></p>
+          <p class="h4 fw-bold">Section D: Contact Details</p>
+          <p class="h6">Mobile number: <span id="popupMobileNumber"></span></p>
+          <p class="h6">Email ID: <span id="popupEmailID"></span></p>
+          <p class="h4 fw-bold">Section E: Aadhaar Details</p>
+          <p class="h6">Aadhaar Number: <span id="popupAadhaarNumber"></span></p>
+          <!-- <p class="h5">Section F: Gender</p> -->
+          <p class="h4 fw-bold">Section G: Date of Birth Details</p>
+          <p class="h6">Date of Birth: <span id="popupDOB"></span></p>
+        </div>
+        <div class="col-md-6">
+          <p class="h4 fw-bold">Section H: Present Address Details</p>
+          <p class="h6">House No: <span id="popupHouseNo"></span></p>
+          <p class="h6">Street: <span id="popupStreet"></span></p>
+          <p class="h6">Village/Town: <span id="popupVillageTown"></span></p>
+          <p class="h6">Post Office: <span id="popupPostOffice"></span></p>
+          <p class="h6">Pin Code: <span id="popupPinCode"></span></p>
+          <p class="h6">Mandal : <span id="popupMandal"></span></p>
+          <p class="h6">State Address: <span id="popupStateAddress"></span></p>
+          <p class="h6">District Address: <span id="popupDistrictAddress"></span></p>
+          <!-- <p class="h5">Section I: Disability Information</p> -->
+          <p class="h4 fw-bold">Section J: Family Member Details</p>
+          <p class="h6">
+            Family Member Name: <span id="popupFamilyMemberName"></span>
+          </p>
+          <p class="h6">
+            Family EPIC Number: <span id="popupFamilyEPICNumber"></span>
+          </p>
+          <p class="h4 fw-bold">Section K: Declaration of Indian Citizenship</p>
+          <p class="h6">Place of Birth: <span id="popupPlaceOfBirth"></span></p>
+          <p class="h6">State of Birth: <span id="popupStateOfBirth"></span></p>
+          <p class="h6">District of Birth: <span id="popupDistrictOfBirth"></span></p>
+          <p class="h6">Resident Since: <span id="popupResidentSince"></span></p>
+          <p class="h6">Application Date: <span id="popupApplicationDate"></span></p>
+        </div>
+        <button id="closePopup" class="btn btn-lg btn-secondary">Close</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Error Messages -->
+  {% if form.errors %}
+  <ul class="errorlist">
+    {% for error in form.errors %}
+    <li class="text-danger">{{ error }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  <!-- Footer -->
+  <fotter class="container-fluid text-center">
+    <div class="copyRights">
+      © Copyright E voter portal 2024<span style="color: rgb(7, 48, 89)">| V 1.0</span>
+    </div>
+  </fotter>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+    crossorigin="anonymous"></script>
+
+  <!-- For the state and district -->
+  <script>
+    const stateSelect = document.getElementById("state");
+    const districtSelect = document.getElementById("district");
+    const assemblySelect = document.getElementById("assembly_constituency");
+
+    const stateDistricts = {
+      "Andhra Pradesh": [
+        "Srikakulam",
+        "Parvathipuram Manyam",
+        "Vizianagaram",
+        "Visakhapatnam",
+        "Anakapalli",
+        "Alluri Sitarama Raju",
+        "Kakinada",
+        "East Godavari",
+        "Konaseema",
+        "Eluru",
+        "West Godavari",
+        "Nandamuri Taraka Rama Rao",
+        "Krishna",
+        "Guntur",
+        "Palnadu",
+        "Bapatla",
+        "Prakasam",
+        "Sri Potti Sriramulu Nellore",
+        "Kurnool",
+        "Nandyala",
+        "YSR Kadapa",
+        "Anantapuram",
+        "Sri Sathya Sai",
+        "Annamayya",
+        "Tirupati",
+        "Chittoor",
+      ],
+    };
+
+    const districtAssemblies = {
+      Srikakulam: [
+        "Amadalavalasa",
+        "Etcherla",
+        "Ichchapuram",
+        "Narasannapeta",
+        "Palasa",
+        "Pathapatnam",
+        "Srikakulam",
+        "Tekkali",
+      ],
+      "Parvathipuram Manyam": [
+        "Parvathipuram",
+        "Palakonda",
+        "Kurupam",
+        "Saluru",
+      ],
+      Vizianagaram: [
+        "Bobbili",
+        "Cheepurupalli",
+        "Gajapathinagaram",
+        "Nellimarla",
+        "Srungavarapukota",
+        "Rajam",
+        "Vizianagaram",
+      ],
+      Visakhapatnam: [
+        "Bheemili",
+        "Gajuwaka",
+        "Pendurthi",
+        "Visakhapatnam Thurpu",
+        "Visakhapatnam Uttaram",
+        "Visakhapatnam Dakhinam",
+        "Visakhapatnam Padamara",
+      ],
+      Anakapalli: [
+        "Chodavaram",
+        "Madugula",
+        "Anakapalli",
+        "Pendurthi",
+        "Elamanchili",
+        "Payakaraopeta",
+        "Narsipatnam",
+      ],
+      "Alluri Sitarama Raju": ["Araku Loya", "Paderu", "Rampachodavaram"],
+      Kakinada: [
+        "Jaggampeta",
+        "Kakinada Nagaram",
+        "Kakinada Graminam",
+        "Peddapuram",
+        "Pithapuram",
+        "Prathipadu",
+        "Tuni",
+      ],
+      "East Godavari": [
+        "Anaparthy",
+        "Rajanagaram",
+        "Rajamahendravaram City",
+        "Rajamahendravaram Rural",
+        "Kovvuru",
+        "Nidadavole",
+        "Gopalapuram",
+      ],
+      Konaseema: [
+        "Ramachandrapuram",
+        "Mummidivaram",
+        "Amalapuram",
+        "Razole",
+        "Gannavaram",
+        "Kothapeta",
+        "Mandapeta",
+      ],
+      Eluru: [
+        "Unguturu",
+        "Denduluru",
+        "Eluru",
+        "Polavaram",
+        "Chintalapudi",
+        "Nuzavidu",
+        "Kaikaluru",
+      ],
+      "West Godavari": [
+        "Bhimavaram",
+        "Narasapuram",
+        "Palakollu",
+        "Tadepalligudem",
+        "Tanuku",
+        "Undi",
+        "Unguturu",
+      ],
+      "Nandamuri Taraka Rama Rao": [
+        "Tiruvuru",
+        "Gannavaram (Part)",
+        "Vijayawada Pdamara",
+        "Vijayawada Madya",
+        "Vijayawada Thurpu",
+        "Mylavaram",
+        "Nandigama",
+        "Jaggayyapeta",
+      ],
+      Krishna: [
+        "Avanigadda",
+        "Gannavaram (Part)",
+        "Gudivada",
+        "Pedana",
+        "Machilipatnam",
+        "Machilipatnam",
+        "Pamarru",
+        "Penamaluru",
+      ],
+      Guntur: [
+        "Tadikonda",
+        "Mangalagiri",
+        "Ponnuru",
+        "Tenali",
+        "Prathipadu",
+        "Gunturu Padamara",
+        "Gunturu Thurpu",
+      ],
+      Palnadu: [
+        "Narasaraopet",
+        "Chilakaluripet",
+        "Sattenapalle",
+        "Gurazala",
+        "Pedakurapadu",
+        "Macherla",
+        "Vinukonda",
+      ],
+      Bapatla: [
+        "Vemuru",
+        "Repalle",
+        "Bapatla",
+        "Parchuru",
+        "Addanki",
+        "Chirala",
+      ],
+      Prakasam: [
+        "Santhanuthalapadu",
+        "Yerragondapalem",
+        "Darsi",
+        "Ongole",
+        "Kondapi",
+        "Markapuram",
+        "Giddaluru",
+        "Kanigiri",
+      ],
+      "Sri Potti Sriramulu Nellore": [
+        "Sarvepalli",
+        "Kandukuru",
+        "Kavali",
+        "Atmakuru",
+        "Kovuru",
+        "Nellore Nagaram",
+        "Nellore Graminam",
+        "Udayagiri",
+      ],
+      Kurnool: [
+        "Kurnool",
+        "Kodumuru",
+        "Yemmiganur",
+        "Mantralayam",
+        "Adoni",
+        "Aluru",
+        "Pattikonda",
+        "Panyam (partially)",
+      ],
+      Nandyala: [
+        "Allagadda",
+        "Srisailam",
+        "Nandikotkuru",
+        "Nandyala",
+        "Banaganapalle",
+        "Dhonachalam",
+        "Panyam (partially)",
+      ],
+      "YSR Kadapa": [
+        "Badvelu",
+        "Jammalamadugu",
+        "Kadapa",
+        "Kamalapuram",
+        "Mydukuru",
+        "Proddaturu",
+        "Pulivendula",
+        "Rajampeta (partial)",
+      ],
+      Anantapuram: [
+        "Raptadu",
+        "Rayadurgam",
+        "Uravakonda",
+        "Guntakallu",
+        "Tadpatri",
+        "Singanamala",
+        "Anantapuram Nagaram",
+        "Kalyandurgam",
+      ],
+      "Sri Sathya Sai": [
+        "Madakasira",
+        "Hindupuram",
+        "Penukonda",
+        "Puttaparthi",
+        "Dharmavaram",
+        "Kadiri",
+      ],
+      Annamayya: [
+        "Rajampeta (partially)",
+        "Koduru",
+        "Rayachoti",
+        "Thamballapalle",
+        "Pileru",
+        "Madanapalle",
+        "Punganur",
+      ],
+      Tirupati: [
+        "Tirupati",
+        "Sullurpeta",
+        "Venkatagiri",
+        "Guduru",
+        "Srikalahasti",
+        "Satyavedu",
+        "Chandragiri",
+      ],
+      Chittoor: [
+        "Chittoor",
+        "Gangadhara Nellore (SC)",
+        "Kuppam",
+        "Nagari",
+        "Palamaneru",
+        "Puthalapattu",
+      ],
+    };
+
+    stateSelect.addEventListener("change", function () {
+      const selectedState = this.value;
+      districtSelect.disabled = !selectedState; // Enable district only if state is selected
+
+      // Clear district and assembly options on state change
+      districtSelect.innerHTML = '<option value="">Select District</option>';
+      assemblySelect.innerHTML =
+        '<option value="">Select Assembly Constituency</option>';
+      assemblySelect.disabled = true;
+
+      if (selectedState in stateDistricts) {
+        const availableDistricts = stateDistricts[selectedState];
+        availableDistricts.forEach((district) => {
+          const option = document.createElement("option");
+          option.value = district;
+          option.text = district;
+          districtSelect.appendChild(option);
+        });
+        districtSelect.disabled = false;
+      }
+    });
+
+    districtSelect.addEventListener("change", function () {
+      const selectedDistrict = this.value;
+      assemblySelect.disabled = !selectedDistrict; // Enable assembly only if district is selected
+
+      // Clear assembly options on district change
+      assemblySelect.innerHTML =
+        '<option value="">Select Assembly Constituency</option>';
+
+      if (selectedDistrict in districtAssemblies) {
+        const availableAssemblies = districtAssemblies[selectedDistrict];
+        availableAssemblies.forEach((assembly) => {
+          const option = document.createElement("option");
+          option.value = assembly;
+          option.text = assembly;
+          assemblySelect.appendChild(option);
+        });
+        assemblySelect.disabled = false;
+      }
+    });
+  </script>
+
+  <!-- For the state and district  Address-->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const stateSelect = document.getElementById("state_address");
+      const districtSelect = document.getElementById("district_address");
+
+      const stateDistricts = {
+        "Andhra Pradesh": [
+          "Srikakulam",
+          "Parvathipuram Manyam",
+          "Vizianagaram",
+          "Visakhapatnam",
+          "Anakapalli",
+          "Alluri Sitarama Raju",
+          "Kakinada",
+          "East Godavari",
+          "Konaseema",
+          "Eluru",
+          "West Godavari",
+          "Nandamuri Taraka Rama Rao",
+          "Krishna",
+          "Guntur",
+          "Palnadu",
+          "Bapatla",
+          "Prakasam",
+          "Sri Potti Sriramulu Nellore",
+          "Kurnool",
+          "Nandyala",
+          "YSR Kadapa",
+          "Anantapuram",
+          "Sri Sathya Sai",
+          "Annamayya",
+          "Tirupati",
+          "Chittoor",
+        ],
+      };
+
+      stateSelect.addEventListener("change", function () {
+        const selectedState = this.value;
+        districtSelect.disabled = !selectedState; // Enable district only if state is selected
+
+        // Clear district options on state change
+        districtSelect.innerHTML =
+          '<option value="">Select District</option>';
+
+        if (selectedState in stateDistricts) {
+          const availableDistricts = stateDistricts[selectedState];
+          availableDistricts.forEach((district) => {
+            const option = document.createElement("option");
+            option.value = district;
+            option.text = district;
+            districtSelect.appendChild(option);
+          });
+          districtSelect.disabled = false;
+        }
+      });
+    });
+  </script>
+
+  <!-- For the state and district  Birth-->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const stateSelect = document.getElementById("state_of_birth");
+      const districtSelect = document.getElementById("district_of_birth");
+
+      const stateDistricts = {
+        "Andhra Pradesh": [
+          "Srikakulam",
+          "Parvathipuram Manyam",
+          "Vizianagaram",
+          "Visakhapatnam",
+          "Anakapalli",
+          "Alluri Sitarama Raju",
+          "Kakinada",
+          "East Godavari",
+          "Konaseema",
+          "Eluru",
+          "West Godavari",
+          "Nandamuri Taraka Rama Rao",
+          "Krishna",
+          "Guntur",
+          "Palnadu",
+          "Bapatla",
+          "Prakasam",
+          "Sri Potti Sriramulu Nellore",
+          "Kurnool",
+          "Nandyala",
+          "YSR Kadapa",
+          "Anantapuram",
+          "Sri Sathya Sai",
+          "Annamayya",
+          "Tirupati",
+          "Chittoor",
+        ],
+      };
+
+      stateSelect.addEventListener("change", function () {
+        const selectedState = this.value;
+        districtSelect.disabled = !selectedState; // Enable district only if state is selected
+
+        // Clear district options on state change
+        districtSelect.innerHTML =
+          '<option value="">Select District</option>';
+
+        if (selectedState in stateDistricts) {
+          const availableDistricts = stateDistricts[selectedState];
+          availableDistricts.forEach((district) => {
+            const option = document.createElement("option");
+            option.value = district;
+            option.text = district;
+            districtSelect.appendChild(option);
+          });
+          districtSelect.disabled = false;
+        }
+      });
+    });
+  </script>
+
+  <!-- For contact details -->
+  <script>
+    const mobileOwnershipCheckboxes = document.querySelectorAll(
+      'input[name="mobile_ownership"]'
+    );
+    const emailOwnershipCheckboxes = document.querySelectorAll(
+      'input[name="email_ownership"]'
+    );
+    const mobileNumberInput = document.getElementById("mobile_number");
+    const emailInput = document.getElementById("email_id");
+
+    const toggleInputs = (event) => {
+      const isOwnerSelf = event.target.value === "self";
+      const isMobileOwnershipChanged =
+        event.target.name === "mobile_ownership";
+
+      if (isOwnerSelf) {
+        if (isMobileOwnershipChanged) {
+          mobileNumberInput.disabled = true;
+          mobileNumberInput.required = false;
+        } else {
+          emailInput.disabled = true;
+          emailInput.required = false;
+        }
+      } else {
+        if (isMobileOwnershipChanged) {
+          mobileNumberInput.disabled = false;
+          mobileNumberInput.required = true;
+        } else {
+          emailInput.disabled = false;
+          emailInput.required = true;
+        }
+      }
+    };
+
+    mobileOwnershipCheckboxes.forEach((checkbox) =>
+      checkbox.addEventListener("change", toggleInputs)
+    );
+    emailOwnershipCheckboxes.forEach((checkbox) =>
+      checkbox.addEventListener("change", toggleInputs)
+    );
+
+    // Initial toggle for default checked states
+    toggleInputs();
+  </script>
+
+  <!-- For Aadhaar details-->
+  <script>
+    const aadhaarAvailabilityRadios = document.querySelectorAll(
+      'input[name="aadhaar_availability"]'
+    );
+    const aadhaarNumberInput = document.getElementById("aadhaar_number");
+
+    const toggleAadhaarNumber = (event) => {
+      const isAadhaarAvailable = event.target.value === "yes";
+      aadhaarNumberInput.disabled = !isAadhaarAvailable;
+      aadhaarNumberInput.required = isAadhaarAvailable;
+    };
+
+    // Set all radio buttons to unchecked initially
+    aadhaarAvailabilityRadios.forEach((radio) => (radio.checked = false));
+
+    aadhaarAvailabilityRadios.forEach((radio) =>
+      radio.addEventListener("change", toggleAadhaarNumber)
+    );
+
+    // No initial toggle needed since nothing is checked by default
+  </script>
+
+  <!-- For Date of Birth date picking -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $("#dob").datepicker({
+        dateFormat: "yy-mm-dd", // Set the date format
+        maxDate: "-18y", // Restrict dates to 18 years ago from today
+        changeMonth: true,
+        changeYear: true,
+        yearRange: "-100:+0", // Allow selection of dates up to 100 years ago
+      });
+
+      // Prevent manual typing in the date input field
+      $("#dob").on("keydown", function (event) {
+        event.preventDefault();
+      });
+    });
+  </script>
+
+  <!-- For Date of Birth document -->
+  <script>
+    // Get the radio buttons and select element
+    const birthCertificateRadio = document.getElementById("birth_certificate");
+    const otherDocumentRadio = document.getElementById("other_document");
+    const documentTypeSelect = document.getElementById("dob_document_type");
+    const documentUploadInput = document.getElementById("dob_document");
+
+    // Add event listeners to the radio buttons
+    birthCertificateRadio.addEventListener("change", () => {
+      // Disable select and enable file upload
+      documentTypeSelect.disabled = true;
+      documentUploadInput.disabled = false;
+    });
+
+    otherDocumentRadio.addEventListener("change", () => {
+      // Enable select
+      documentTypeSelect.disabled = false;
+      documentUploadInput.disabled = true;
+    });
+
+    // Add event listener to select element
+    documentTypeSelect.addEventListener("change", () => {
+      // Enable file upload if selected document type is valid
+      const selectedDocumentType = documentTypeSelect.value;
+      const validDocumentTypes = [
+        "aadhaar_card",
+        "driving_license",
+        "pan_card",
+        "education_certificate",
+        "passport",
+        "birth_certificate",
+      ];
+
+      if (validDocumentTypes.includes(selectedDocumentType)) {
+        documentUploadInput.disabled = false;
+      } else {
+        documentUploadInput.disabled = true;
+      }
+    });
+  </script>
+
+  <!-- For Present Address details -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const documentProofRadio = document.getElementById(
+        "proof-type-document"
+      );
+      const otherDocumentProofRadio = document.getElementById(
+        "proof-type-other-document"
+      );
+      const otherDocumentSection = document.getElementById(
+        "address-document-type"
+      );
+      const otherDocumentUploadInput = document.getElementById(
+        "address-proof-document"
+      );
+
+      // Function to disable the "other document" section and reset its dropdown
+      function resetOtherDocumentSection() {
+        otherDocumentSection.disabled = true;
+        otherDocumentUploadInput.disabled = true;
+        otherDocumentSection.selectedIndex = 0; // Select the default option
+      }
+
+      // Initial state: Disable both sections
+      resetOtherDocumentSection();
+
+      // Event listener for "Document for proof of residence" radio button
+      documentProofRadio.addEventListener("change", function () {
+        if (documentProofRadio.checked) {
+          resetOtherDocumentSection();
+          otherDocumentUploadInput.disabled = false; // Enable upload for document proof
+        }
+      });
+
+      // Event listener for "Any other document for proof of residence" radio button
+      otherDocumentProofRadio.addEventListener("change", function () {
+        if (otherDocumentProofRadio.checked) {
+          otherDocumentSection.disabled = false; // Enable the "other document" dropdown
+          otherDocumentUploadInput.disabled = true; // Initially disable upload
+
+          // Enable upload if a document other than the default is selected
+          otherDocumentSection.addEventListener("change", function () {
+            otherDocumentUploadInput.disabled =
+              otherDocumentSection.selectedIndex === 0;
+          });
+        }
+      });
+    });
+  </script>
+
+    <!-- For Captcha -->
+    <script>
+      // Function to generate a random captcha code
+      function generateCaptcha() {
+        let captchaChars =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        let captchaLength = 6;
+        let captchaCode = "";
+        for (let i = 0; i < captchaLength; i++) {
+          captchaCode += captchaChars.charAt(
+            Math.floor(Math.random() * captchaChars.length)
+          );
+        }
+        return captchaCode;
+      }
+    
+      // Function to display the captcha code
+      function displayCaptcha() {
+        let captchaCode = generateCaptcha();
+        let captchaContainer = document.getElementById("captchaContainer");
+        captchaContainer.innerHTML = captchaCode;
+      }
+    
+      // Refresh captcha on button click
+      document
+        .getElementById("refreshCaptcha")
+        .addEventListener("click", displayCaptcha);
+    
+      // Call displayCaptcha on page load
+      displayCaptcha();
+    
+      // Add event listener to form submit
+      document
+        .getElementById("submitAll")
+        .addEventListener("click", function (event) {
+          // Prevent the default form submission
+          event.preventDefault();
+          // Get the entered captcha text
+          let enteredCaptcha = document.getElementById("captchaText").value;
+          // Get the generated captcha code
+          let generatedCaptcha =
+            document.getElementById("captchaContainer").innerText;
+          // Check if entered captcha matches the generated captcha
+          if (enteredCaptcha === generatedCaptcha) {
+            // If captcha is correct, submit the form
+            document.getElementById("myForm").submit();
+          } else {
+            // If captcha is incorrect, display error message
+            document.getElementById("captchaError").innerText =
+              "Please enter the correct captcha.";
+          }
+        });
+    </script>
+
+  <!-- For Popup -->
+  <script>
+    // JavaScript code to handle form preview and popup
+    var Preview = document.getElementById("Preview");
+    var myPopup = document.getElementById("myPopup");
+    var closePopup = document.getElementById("closePopup");
+    var form = document.getElementById("myForm");
+
+    Preview.addEventListener("click", function () {
+      // Retrieve form data here
+      var state = document.getElementById("state").value;
+      var district = document.getElementById("district").value;
+      var assemblyConstituency = document.getElementById("assembly_constituency").value;
+      var firstName = document.getElementById("first_name").value;
+      var middleName = document.getElementById("middle_name").value;
+      var lastName = document.getElementById("surname").value;
+      var relativeName = document.getElementById("relative_name").value;
+      var relativeSurname = document.getElementById("relative_surname").value;
+      var mobileNumber = document.getElementById("mobile_number").value;
+      var emailId = document.getElementById("email_id").value;
+      var aadhaarNumber = document.getElementById("aadhaar_number").value;
+      var dob = document.getElementById("dob").value;
+      var houseNo = document.getElementById("house_no").value;
+      var street = document.getElementById("street").value;
+      var villageTown = document.getElementById("village_town").value;
+      var postOffice = document.getElementById("post_office").value;
+      var pinCode = document.getElementById("pin_code").value;
+      var mandal = document.getElementById("mandal").value;
+      var stateAddress = document.getElementById("state_address").value;
+      var districtAddress = document.getElementById("district_address").value;
+      var familyMemberName = document.getElementById("familyMemberName").value;
+      var familyEPICNumber = document.getElementById("familyepicNumber").value;
+      var placeOfBirth = document.getElementById("placeOfBirth").value;
+      var stateOfBirth = document.getElementById("state_of_birth").value;
+      var districtOfBirth = document.getElementById("district_of_birth").value;
+      var residentSince = document.getElementById("residentSince").value;
+      var applicationDate = document.getElementById("applicationDate").value;
+
+
+      // Display form data in the popup
+      document.getElementById("popupState").textContent = state;
+      document.getElementById("popupDistrict").textContent = district;
+      document.getElementById("popupAssembly").textContent = assemblyConstituency;
+      document.getElementById("popupName").textContent = firstName;
+      document.getElementById("popupMiddleName").textContent = middleName;
+      document.getElementById("popupSurname").textContent = lastName;
+      document.getElementById("popupRelativeName").textContent = relativeName;
+      document.getElementById("popupRelativeSurname").textContent = relativeSurname;
+      document.getElementById("popupMobileNumber").textContent = mobileNumber;
+      document.getElementById("popupEmailID").textContent = emailId;
+      document.getElementById("popupAadhaarNumber").textContent = aadhaarNumber;
+      document.getElementById("popupDOB").textContent = dob;
+      document.getElementById("popupHouseNo").textContent = houseNo;
+      document.getElementById("popupStreet").textContent = street;
+      document.getElementById("popupVillageTown").textContent = villageTown;
+      document.getElementById("popupPostOffice").textContent = postOffice;
+      document.getElementById("popupPinCode").textContent = pinCode;
+      document.getElementById("popupMandal").textContent = mandal;
+      document.getElementById("popupStateAddress").textContent = stateAddress;
+      document.getElementById("popupDistrictAddress").textContent = districtAddress;
+      document.getElementById("popupFamilyMemberName").textContent = familyMemberName;
+      document.getElementById("popupFamilyEPICNumber").textContent = familyEPICNumber;
+      document.getElementById("popupPlaceOfBirth").textContent = placeOfBirth;
+      document.getElementById("popupStateOfBirth").textContent = stateOfBirth;
+      document.getElementById("popupDistrictOfBirth").textContent = districtOfBirth;
+      document.getElementById("popupResidentSince").textContent = residentSince;
+      document.getElementById("popupApplicationDate").textContent = applicationDate;
+
+
+
+
+      // Display other form data similarly
+
+      // Show the popup
+      myPopup.style.display = "block";
+    });
+
+    closePopup.addEventListener("click", function () {
+      // Close the popup
+      myPopup.style.display = "none";
+    });
+
+    window.addEventListener("click", function (event) {
+      // Close the popup if clicked outside of it
+      if (event.target == myPopup) {
+        myPopup.style.display = "none";
+      }
+    });
+  </script>
+</body>
+
+</html>
