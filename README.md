@@ -39,9 +39,9 @@
 
 ## DEMO Video link:
 
-- ### [YouTube](https://youtu.be/4N7UCZvk9f8).
+- ### [YouTube](https://youtu.be/zN3QOMUBeR8).
 
-- ### [LinkedIn](https://www.linkedin.com/posts/sammetamaheshbabu_cs50-python-project-activity-7169033730592813058-wXCX?utm_source=share&utm_medium=member_desktop).
+- ### [LinkedIn](https://www.linkedin.com/posts/sammetamaheshbabu_certificateofmerit-fullstackwebdevelopment-activity-7191028378110451712-kaKb?utm_source=share&utm_medium=member_desktop).
 
 ---
 
